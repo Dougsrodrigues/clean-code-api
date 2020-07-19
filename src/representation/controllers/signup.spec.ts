@@ -38,7 +38,7 @@ describe('SignUp Controller', () => {
 });
 
 describe('SignUp Controller', () => {
-  test('Should  return 400 if no email is provider', () => {
+  test('Should  return 400 if no password is provider', () => {
     const sut = new SignuUpController();
     const httpRequest = {
       body: {
