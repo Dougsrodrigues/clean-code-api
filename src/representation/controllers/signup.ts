@@ -2,8 +2,16 @@ import { HttpResponse, HttpRequest } from '../protocols/http';
 import MissingParamError from '../errors/missing-param-error';
 import badRequest from '../helpers/http-helper';
 import { Controller } from '../protocols/controllers';
+import { EmailValidator } from '../protocols/email-validator';
+import InvalidParamError from '../errors/invalid-param-error';
 
-class SignuUpController implements Controller {
+class SignUpController implements Controller {
+  private readonly emailValidator: EmailValidator;
+
+  constructor(emailValidator: EmailValidator) {
+    this.emailValidator = emailValidator;
+  }
+
   handle(httpRequest: HttpRequest): HttpResponse {
     const requiredFields = [
       'name',
@@ -18,8 +26,14 @@ class SignuUpController implements Controller {
       }
     }
 
-    return badRequest(new MissingParamError('SignUp Gerenic Error'));
+    const isValid = this.emailValidator.isValid(httpRequest.body.email);
+
+    if (!isValid) {
+      return badRequest(new InvalidParamError('email'));
+    }
+
+    return badRequest(new Error('SignUp Gerenic Error'));
   }
 }
 
-export default SignuUpController;
+export default SignUpController;
